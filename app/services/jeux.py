@@ -129,7 +129,36 @@ def creer(session: Session, entree: JeuCreation, utilisateur: Utilisateur) -> Je
 def creer_lot(
     session: Session, entrees: list[JeuCreation], utilisateur: Utilisateur
 ) -> list[Jeu]:
-    return [creer(session, entree, utilisateur) for entree in entrees]
+    """Refuse une lot partiellement invalide : les créations sont validées avant
+    le commit final, et une erreur les annule toutes."""
+    jeux: list[Jeu] = []
+    titres_vus: set[str] = set()
+
+    for entree in entrees:
+        _verifier_editeur(session, entree.editeur_id)
+        titre = entree.titre.strip()
+        cle = titre.lower()
+        if cle in titres_vus:
+            raise TitreDejaUtilise(titre)
+        _verifier_titre_libre(session, titre)
+        titres_vus.add(cle)
+
+        donnees = entree.model_dump()
+        donnees["genre"] = entree.genre.value
+        jeux.append(Jeu(**donnees, proprietaire_id=utilisateur.id))
+
+    try:
+        for jeu in jeux:
+            session.add(jeu)
+        session.flush()
+        session.commit()
+    except IntegrityError:
+        session.rollback()
+        raise TitreDejaUtilise(entrees[0].titre) from None
+
+    for jeu in jeux:
+        session.refresh(jeu)
+    return jeux
 
 
 def verifier_droit(jeu: Jeu, utilisateur: Utilisateur) -> None:

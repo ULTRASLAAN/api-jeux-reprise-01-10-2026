@@ -128,6 +128,28 @@ def test_creation_en_lot(client, entetes):
     assert len(reponse.json()) == 2
 
 
+def test_creation_en_lot_est_atomique(client, entetes):
+    client.post(
+        f"{BASE}/jeux",
+        json={"titre": "Hades", "genre": "Roguelike", "note": 9, "annee": 2020},
+        headers=entetes,
+    )
+
+    reponse = client.post(
+        f"{BASE}/jeux/lot",
+        json=[
+            {"titre": "Terraria", "genre": "RPG", "note": 8, "annee": 2011},
+            {"titre": "Inside", "genre": "Plateforme", "note": 7, "annee": 2016},
+            {"titre": "hades", "genre": "Roguelike", "note": 9, "annee": 2020},
+        ],
+        headers=entetes,
+    )
+
+    assert reponse.status_code == 409
+    assert reponse.json()["code"] == "TITRE_DEJA_UTILISE"
+    assert client.get(f"{BASE}/jeux").json()["total"] == 1
+
+
 def test_patch_preserve_les_champs_non_envoyes(client, entetes):
     cree = creer_jeu(client, entetes)
     reponse = client.patch(f"{BASE}/jeux/{cree['id']}", json={"note": 7}, headers=entetes)
