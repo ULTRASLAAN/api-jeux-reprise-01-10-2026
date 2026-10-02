@@ -133,7 +133,7 @@ class JeuMiseAJour(BaseModel):
 
     titre: str | None = Field(default=None, min_length=1, max_length=100)
     genre: Genre | None = None
-    note: int | None = Field(default=None, ge=0, le=100)
+    note: int | None = Field(default=None, ge=0, le=10)
     annee: int | None = Field(default=None, ge=1970, le=2030)
     tags: list[str] | None = Field(default=None, max_length=10)
     code_editeur: str | None = Field(default=None, pattern=r"^[A-Z]{3}-\d{4}$")

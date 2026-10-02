@@ -6,13 +6,21 @@ from sqlalchemy.orm import Session, selectinload
 from app.tables.editeurs import Editeur
 
 
-def lister(session: Session, saut: int = 0, limite: int = 50) -> list[Editeur]:
-    requete = select(Editeur).order_by(Editeur.nom).offset(saut).limit(limite)
+def lister(
+    session: Session, saut: int = 0, limite: int = 50, pays: str | None = None
+) -> list[Editeur]:
+    requete = select(Editeur)
+    if pays is not None:
+        requete = requete.where(Editeur.pays.ilike(pays.strip()))
+    requete = requete.order_by(Editeur.nom).offset(saut).limit(limite)
     return list(session.scalars(requete).all())
 
 
-def compter(session: Session) -> int:
-    return session.scalar(select(func.count()).select_from(Editeur)) or 0
+def compter(session: Session, pays: str | None = None) -> int:
+    requete = select(func.count()).select_from(Editeur)
+    if pays is not None:
+        requete = requete.where(Editeur.pays.ilike(pays.strip()))
+    return session.scalar(requete) or 0
 
 
 def par_id(session: Session, editeur_id: int) -> Editeur | None:

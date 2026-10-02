@@ -9,8 +9,10 @@ from app.modeles.jeux import EditeurEntree
 from app.tables.editeurs import Editeur
 
 
-def lister(session: Session, saut: int = 0, limite: int = 50) -> tuple[list[Editeur], int]:
-    return depot.lister(session, saut, limite), depot.compter(session)
+def lister(
+    session: Session, saut: int = 0, limite: int = 50, pays: str | None = None
+) -> tuple[list[Editeur], int]:
+    return depot.lister(session, saut, limite, pays), depot.compter(session, pays)
 
 
 def trouver(session: Session, editeur_id: int) -> Editeur:

@@ -15,6 +15,8 @@ def _requete_filtree(
     note_min: int = 0,
     recherche: str | None = None,
     proprietaire_id: int | None = None,
+    annee_min: int | None = None,
+    annee_max: int | None = None,
 ) -> Select:
     """Chaque `.where()` renvoie une *nouvelle* requête : rien n'est exécuté
     avant `session.scalars(...)`, ce qui permet de composer les filtres."""
@@ -31,6 +33,10 @@ def _requete_filtree(
         requete = requete.where(Jeu.titre.ilike(f"%{terme}%"))
     if proprietaire_id is not None:
         requete = requete.where(Jeu.proprietaire_id == proprietaire_id)
+    if annee_min is not None:
+        requete = requete.where(Jeu.annee >= annee_min)
+    if annee_max is not None:
+        requete = requete.where(Jeu.annee <= annee_max)
 
     return requete
 
@@ -44,8 +50,12 @@ def lister(
     tri: str = "titre",
     saut: int = 0,
     limite: int = 20,
+    annee_min: int | None = None,
+    annee_max: int | None = None,
 ) -> list[Jeu]:
-    requete = _requete_filtree(genre, note_min, recherche, proprietaire_id)
+    requete = _requete_filtree(
+        genre, note_min, recherche, proprietaire_id, annee_min=annee_min, annee_max=annee_max
+    )
 
     colonne = {"titre": Jeu.titre, "note": Jeu.note, "annee": Jeu.annee}[tri]
     ordre = colonne.desc() if tri == "annee" else colonne.asc()
@@ -67,9 +77,13 @@ def compter(
     note_min: int = 0,
     recherche: str | None = None,
     proprietaire_id: int | None = None,
+    annee_min: int | None = None,
+    annee_max: int | None = None,
 ) -> int:
     """Le total compte les éléments correspondant aux filtres, pas le catalogue."""
-    requete = _requete_filtree(genre, note_min, recherche, proprietaire_id)
+    requete = _requete_filtree(
+        genre, note_min, recherche, proprietaire_id, annee_min=annee_min, annee_max=annee_max
+    )
     sous_requete = requete.with_only_columns(Jeu.id).subquery()
     return session.scalar(select(func.count()).select_from(sous_requete)) or 0
 

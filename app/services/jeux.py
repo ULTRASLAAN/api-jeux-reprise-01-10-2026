@@ -33,12 +33,31 @@ def lister(
     tri: str = "titre",
     saut: int = 0,
     limite: int = 20,
+    annee_min: int | None = None,
+    annee_max: int | None = None,
 ) -> tuple[list[Jeu], int]:
     """Renvoie la page demandée *et* le total."""
     elements = depot.lister(
-        session, genre, note_min, recherche, proprietaire_id, tri, saut, limite
+        session,
+        genre,
+        note_min,
+        recherche,
+        proprietaire_id,
+        tri,
+        saut,
+        limite,
+        annee_min=annee_min,
+        annee_max=annee_max,
     )
-    total = depot.compter(session, genre, note_min, recherche)
+    total = depot.compter(
+        session,
+        genre,
+        note_min,
+        recherche,
+        proprietaire_id,
+        annee_min=annee_min,
+        annee_max=annee_max,
+    )
     return elements, total
 
 

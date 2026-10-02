@@ -49,6 +49,8 @@ def lister(
     note_min: Annotated[int, Query(ge=0, le=10)] = 0,
     recherche: Annotated[str | None, Query(min_length=2, max_length=100)] = None,
     tri: TriJeu = TriJeu.titre,
+    annee_min: Annotated[int | None, Query(ge=1970, le=2030)] = None,
+    annee_max: Annotated[int | None, Query(ge=1970, le=2030)] = None,
 ):
     elements, total = service.lister(
         session,
@@ -58,6 +60,8 @@ def lister(
         tri=tri.value,
         saut=page.saut,
         limite=page.limite,
+        annee_min=annee_min,
+        annee_max=annee_max,
     )
     return Page(elements=elements, total=total, saut=page.saut, limite=page.limite)
 

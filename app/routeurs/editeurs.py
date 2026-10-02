@@ -11,8 +11,8 @@ routeur = APIRouter(prefix="/editeurs", tags=["Éditeurs"])
 
 
 @routeur.get("", response_model=Page[EditeurSortie], summary="Lister les éditeurs")
-def lister(session: SessionDep, page: PaginationDep):
-    elements, total = service.lister(session, page.saut, page.limite)
+def lister(session: SessionDep, page: PaginationDep, pays: str | None = None):
+    elements, total = service.lister(session, page.saut, page.limite, pays)
     return Page(elements=elements, total=total, saut=page.saut, limite=page.limite)
 
 

@@ -176,6 +176,13 @@ def test_patch_note_seule(client, entetes):
     assert reponse.json()["note"] == 3
 
 
+def test_patch_note_hors_bornes_refuse_par_validation(client, entetes):
+    cree = creer_jeu(client, entetes)
+    reponse = client.patch(f"{BASE}/jeux/{cree['id']}", json={"note": 11}, headers=entetes)
+
+    assert reponse.status_code == 422
+
+
 def test_suppression_puis_seconde_suppression(client, entetes):
     cree = creer_jeu(client, entetes)
 
