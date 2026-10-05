@@ -19,8 +19,15 @@ def _requete_filtree(
     annee_max: int | None = None,
 ) -> Select:
     """Chaque `.where()` renvoie une *nouvelle* requête : rien n'est exécuté
-    avant `session.scalars(...)`, ce qui permet de composer les filtres."""
+    avant `session.scalars(...)`, ce qui permet de composer les filtres.
+
+    Les bornes annuelles sont traitées comme un intervalle fermé : `annee_min`
+    et `annee_max` sont normalisées pour éviter un intervalle inversé quand le
+    client envoie des bornes dans l'ordre inverse."""
     requete = select(Jeu)
+
+    if annee_min is not None and annee_max is not None and annee_min > annee_max:
+        annee_min, annee_max = annee_max, annee_min
 
     if genre:
         requete = requete.where(Jeu.genre == genre)
