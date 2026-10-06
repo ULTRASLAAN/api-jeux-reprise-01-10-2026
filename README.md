@@ -10,7 +10,7 @@ Cette application expose un catalogue de jeux avec:
 - les filtres par genre, note et année,
 - la gestion des éditeurs et de leurs jeux,
 - l'authentification, les rôles et les droits d'accès,
-- l'historique des modifications.
+- l'historique des modifications et de tout . 
 
 ## Prérequis
 
