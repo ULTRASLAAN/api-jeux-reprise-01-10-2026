@@ -1,7 +1,7 @@
 # 1. Fusionner les PR par squash
 
 - **Date** : 2026-10-06
-- **Statut** : Proposée
+- **Statut** : Acceptée
 
 ## Contexte
 Pendant le développement, les membres de l'équipe créent de nombreux commits intermédiaires (`wip`, retours de relecture). Nous devons définir une stratégie de fusion uniforme pour préserver un historique `main` clair et exploitable.
