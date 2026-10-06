@@ -54,8 +54,13 @@ def test_filtrer_par_genre(session, catalogue):
 def test_filtrer_par_annee(session, catalogue):
     elements, total = service.lister(session, annee_min=2018, annee_max=2020)
 
-    assert total == 3
-    assert {jeu.titre for jeu in elements} == {"Among Us", "Hades", "Disco Elysium"}
+    assert total == 4
+    assert {jeu.titre for jeu in elements} == {
+        "Celeste",
+        "Among Us",
+        "Hades",
+        "Disco Elysium",
+    }
 
 
 def test_filtres_cumulables(session, catalogue):
